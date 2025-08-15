@@ -1,5 +1,5 @@
 import * as gameData from './game.js';
-import * as System from '/../main.js';
+import * as System from './main.js';
 
 import { 
   initialGameState, 

@@ -1,5 +1,5 @@
 import * as boardData from './board.js';
-import * as System from '/../main.js';
+import * as System from './main.js';
 
 const rollBtn = document.getElementById('rollBtn');
 const endBtn = document.getElementById('endBtn');

@@ -1,32 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZuljaPoly</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <div class="panel">
-        <div id="main-menu">
-            <button id="new-game">New Game</button>
-            <button>Continue</button>
-            <button>Options</button>
+    <div class="wrap">
+        <div class="board-container">
+            <div class="board" id="board"></div>
+            <div id="diceAnimation" class="dice-animation"></div>
         </div>
+        <div class="panel" id="panel">
+            <!-- Main Menu View (shown at start) -->
+            <div id="mainMenu" class="menu-view">
+                <h2>ZuljaPoly</h2>
+                <div class="menu-options">
+                    <button id="newGameMenuBtn" class="btn primary">New Game</button>
+                    <button id="continueBtn" class="btn" disabled>Continue</button>
+                    <button id="optionsBtn" class="btn">Options</button>
+                </div>
+            </div>
 
-        <div id="player-select" class="hidden">
-          <h2>Select Players</h2>
-          <button data-players="2">2 Players</button>
-          <button data-players="3">3 Players</button>
-          <button data-players="4">4 Players</button>
-          <button class="back-btn" id="back">Back</button>
-      </div>
+            <!-- Game View (shown during gameplay) -->
+            <div id="gameView" style="display:none">
+                <div class="row" style="justify-content:space-between">
+                    <div id="turnInfo"><strong>Turn:</strong> –</div>
+                    <div id="playerTags"></div>
+                </div>
+                <div class="row">
+                    <button id="rollBtn" class="btn primary">Roll</button>
+                    <button id="endBtn" class="btn" disabled>End Turn</button>
+                </div>
+                <div class="players" id="players"></div>
+                <div class="card">
+                    <div><strong>Tile</strong>: <span id="tileName">–</span></div>
+                    <div id="tileDesc" style="color:var(--muted);font-size:14px">–</div>
+                </div>
+                <div id="statusMessage" class="status-message"></div>
+                <div class="row" style="margin-top:8px;justify-content:space-between">
+                    <button id="menuBtn" class="btn">Menu</button>
+                    <button id="rulesBtn" class="btn">Rules</button>
+                </div>
+            </div>
 
-        
-        <div id="board" class="board hidden"></div>
-        <div id="players" class="hidden players-bar"></div>
+            <!-- Player Selection View -->
+            <div id="playerSelection" class="menu-view" style="display:none">
+                <h2>Select Players</h2>
+                <div class="menu-options">
+                    <button data-players="2" class="btn primary">2 Players</button>
+                    <button data-players="3" class="btn primary">3 Players</button>
+                    <button data-players="4" class="btn primary">4 Players</button>
+                    <button id="backToMainBtn" class="btn">Back</button>
+                </div>
+            </div>
+
+            <!-- Options View -->
+            <div id="optionsView" class="menu-view" style="display:none">
+                <h2>Options</h2>
+                <div class="options-form">
+                    <div class="form-group">
+                        <label for="nicknameInput">Nickname</label>
+                        <input type="text" id="nicknameInput" maxlength="10">
+                    </div>
+
+                    <!-- Sound Effects Volume Slider -->
+                    <div class="form-group slider-group">
+                        <label for="sfxVolumeSlider">Sound Effects Volume</label>
+                        <div class="slider-container">
+                            <input type="range" id="sfxVolumeSlider" min="0" max="1" step="0.01">
+                            <button class="mute-btn" data-target="sfxVolumeSlider" aria-label="Mute sound effects">
+                                <span class="icon">🔈</span>
+                            </button>
+                            <span id="sfxVolumeValue">100%</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group slider-group">
+                        <label for="musicVolumeSlider">Music Volume</label>
+                        <div class="slider-container">
+                            <input type="range" id="musicVolumeSlider" min="0" max="1" step="0.01">
+                            <button class="mute-btn" data-target="musicVolumeSlider" aria-label="Mute music">
+                                <span class="icon">🔈</span>
+                            </button>
+                            <span id="musicVolumeValue">45%</span>
+                        </div>
+                    </div>
+
+                    <button id="backFromOptionsBtn" class="btn">Back</button>
+                </div>
+            </div>
+
+        </div>
     </div>
-
-  
-    <script src="main.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
+
 </html>

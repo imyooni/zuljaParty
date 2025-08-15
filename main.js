@@ -1,54 +1,106 @@
-const newGameBtn = document.getElementById('new-game');
-const backBtn = document.getElementById('back');
-const mainMenu = document.getElementById('main-menu');
-const playerSelect = document.getElementById('player-select');
-const board = document.getElementById('board');
-const playersBar = document.getElementById('players');
+// Cached DOM elements
+import * as boardData from './assets/scripts/board.js';
+import * as gameData from './assets/scripts/game.js';
+import * as Audio from './assets/scripts/audio.js';
 
-newGameBtn.addEventListener('click', () => {
-    mainMenu.classList.add('hidden');
-    playerSelect.classList.remove('hidden');
+const mainMenu = document.getElementById('mainMenu');
+const gameView = document.getElementById('gameView');
+const playerSelection = document.getElementById('playerSelection');
+const newGameMenuBtn = document.getElementById('newGameMenuBtn');
+const continueBtn = document.getElementById('continueBtn'); // not configured yet
+const optionsBtn = document.getElementById('optionsBtn');
+const backToMainBtn = document.getElementById('backToMainBtn');
+///
+const optionsView = document.getElementById('optionsView');
+const nicknameInput = document.getElementById('nicknameInput');
+const soundToggle = document.getElementById('soundToggle');
+const musicToggle = document.getElementById('musicToggle');
+const backFromOptionsBtn = document.getElementById('backFromOptionsBtn');
+
+const style = document.createElement('style');
+style.textContent = `
+  * {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+  }
+`;
+
+export const audioManager = new Audio.AudioManager();
+await audioManager.loadAudio();
+
+document.head.appendChild(style);
+
+newGameMenuBtn.addEventListener('click', () => {
+  mainMenu.style.display = 'none';
+  playerSelection.style.display = 'block';
+});
+
+backToMainBtn.addEventListener('click', () => {
+  playerSelection.style.display = 'none';
+  mainMenu.style.display = 'block';
+});
+
+menuBtn.addEventListener('click', () => {
+  gameView.style.display = 'none';
+  mainMenu.style.display = 'block';
+});
+
+playerSelection.querySelectorAll('button[data-players]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const numPlayers = parseInt(btn.dataset.players);
+    gameData.startGame(numPlayers);
+  });
+});
+
+optionsBtn.addEventListener('click', () => {
+  mainMenu.style.display = 'none';
+  optionsView.style.display = 'block';
+  const settings = JSON.parse(localStorage.getItem('gameSettings')) || {};
+
+  initVolumeControls()
+  nicknameInput.value = settings.nickname || '';
+});
+
+backFromOptionsBtn.addEventListener('click', () => {
+  const settings = {
+    nickname: nicknameInput.value.substring(0, 10),
+  };
+  localStorage.setItem('gameSettings', JSON.stringify(settings));
+  optionsView.style.display = 'none';
+  mainMenu.style.display = 'block';
 });
 
 
-backBtn.addEventListener('click', () => {
-    playerSelect.classList.add('hidden');
-    mainMenu.classList.remove('hidden');
-});
+const sfxVolumeSlider = document.getElementById('sfxVolumeSlider');
+const musicVolumeSlider = document.getElementById('musicVolumeSlider');
+const sfxVolumeValue = document.getElementById('sfxVolumeValue');
+const musicVolumeValue = document.getElementById('musicVolumeValue');
 
-
-playerSelect.querySelectorAll('button:not(.back-btn)').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const numPlayers = parseInt(btn.dataset.players);
-        playerSelect.classList.add('hidden');
-        board.classList.remove('hidden');
-        playersBar.classList.remove('hidden');
-        createBoard(8, 10);
-        playersBar.innerHTML = '';
-        for (let i = 1; i <= numPlayers; i++) {
-            const playerDiv = document.createElement('div');
-            playerDiv.className = `player p${i}`;
-            playerDiv.textContent = `P${i}`;
-            playersBar.appendChild(playerDiv);
-        }
-    });
-});
-
-
-
-function createBoard(rows, cols) {
-    const board = document.getElementById('board');
-    board.style.gridTemplateColumns = `repeat(${cols}, 32px)`;
-    board.style.gridTemplateRows = `repeat(${rows}, 32px)`;
-    board.innerHTML = '';
-    for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-            const tile = document.createElement('div');
-            tile.classList.add('tile');
-            if (!(r === 0 || r === rows - 1 || c === 0 || c === cols - 1)) {
-                tile.classList.add('empty');
-            }
-            board.appendChild(tile);
-        }
-    }
+function initVolumeControls() {
+    const savedSfxVolume = audioManager.loadGameValue('sfxVolume') ?? 0.5;
+    const savedMusicVolume = audioManager.loadGameValue('bgmVolume') ?? 0.5;
+    sfxVolumeSlider.value = savedSfxVolume;
+    musicVolumeSlider.value = savedMusicVolume;
+    updateVolumeDisplay();
+    audioManager.setSFXVolume(savedSfxVolume);
+    audioManager.setBGMVolume(savedMusicVolume);
 }
+
+function updateVolumeDisplay() {
+    sfxVolumeValue.textContent = `${Math.round(sfxVolumeSlider.value * 100)}%`;
+    musicVolumeValue.textContent = `${Math.round(musicVolumeSlider.value * 100)}%`;
+}
+
+sfxVolumeSlider.addEventListener('input', () => {
+    updateVolumeDisplay();
+    audioManager.setSFXVolume(parseFloat(sfxVolumeSlider.value));
+    localStorage.setItem('sfxVolume', sfxVolumeSlider.value);
+});
+
+musicVolumeSlider.addEventListener('input', () => {
+    updateVolumeDisplay();
+    audioManager.setBGMVolume(parseFloat(musicVolumeSlider.value));
+    localStorage.setItem('bgmVolume', musicVolumeSlider.value);
+});

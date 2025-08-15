@@ -28,11 +28,11 @@ export class AudioManager {
   async loadAudio() {
     const audioFiles = {
       // BGM
-      'battle_theme': 'assets/audio/bgm/battle_theme.ogg',
+      'battle_theme': './assets/audio/bgm/battle_theme.ogg',
 
       // SFX
-      'dice': 'assets/audio/sfx/system_dice.ogg',
-      'move': 'assets/audio/Sfx/system_player_move.ogg',
+      'dice': './assets/audio/sfx/system_dice.ogg',
+      'move': './assets/audio/Sfx/system_player_move.ogg',
     };
 
     const sfxVolumes = {
@@ -182,4 +182,5 @@ export class AudioManager {
       );
     }
   }
+
 }
